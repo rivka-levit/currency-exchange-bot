@@ -14,5 +14,3 @@ EXPOSE 3000
 RUN pip install --upgrade pip && \
     pip install -r /tmp/requirements.txt && \
     rm -rf /tmp
-
-CMD ["python3", "main.py"]

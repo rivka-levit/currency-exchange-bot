@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:3000"
+    volumes:
+      - ./app:/app
+    env_file:
+      - .env
+    command: python3 main.py
