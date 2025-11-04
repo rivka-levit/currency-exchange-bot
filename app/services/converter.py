@@ -7,7 +7,8 @@ import requests
 
 from environs import Env
 
-from app.exceptions import ConversionRequestError
+from exceptions import ConversionRequestError
+
 
 logger = logging.getLogger(__name__)
 
@@ -29,13 +30,8 @@ class CurrencyConverter:
         r = requests.get(f'{self.base_url}/{source}/{target}/{amount}')
 
         if r.status_code != 200:
-            logger.error('Connection to API service failed.')
-            raise ConnectionError(f'Connection error.')
+            logger.error(f'Conversion request failed. Error: {r.status_code, r.text}')
+            raise ConversionRequestError(f'Conversion request failed.')
         else:
             data = r.json()
-            if data['result'] == 'success':
-                return float(data['conversion_result'])
-            else:
-                raise ConversionRequestError(
-                    f'Conversion request failed. Error: {data['error-type']}'
-                )
+            return float(data['conversion_result'])
