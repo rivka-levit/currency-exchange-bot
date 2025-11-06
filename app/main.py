@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher
 from config import Config, load_config
 from lexicon.lexicon_en import LEXICON_EN
 from lexicon.lexicon_ru import LEXICON_RU
+from middlewares.i18n import TranslatorMiddleware
 
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,7 @@ async def main():
     # Register routers
 
     # Register middlewares
+    dp.update.middleware(TranslatorMiddleware())
 
     await dp.start_polling(bot=bot, translations=translations)
 
