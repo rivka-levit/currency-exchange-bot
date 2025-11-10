@@ -4,6 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 
 from config import Config, load_config
+from database import init_db
 from lexicon.lexicon_en import LEXICON_EN
 from lexicon.lexicon_ru import LEXICON_RU
 from middlewares.i18n import TranslatorMiddleware
@@ -34,6 +35,8 @@ async def main():
 
     # Register middlewares
     dp.update.middleware(TranslatorMiddleware())
+
+    dp.workflow_data['db'] = init_db()
 
     await dp.start_polling(bot=bot, translations=translations)
 
