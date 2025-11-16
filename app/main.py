@@ -9,6 +9,8 @@ from lexicon.lexicon_en import LEXICON_EN
 from lexicon.lexicon_ru import LEXICON_RU
 from middlewares.i18n import TranslatorMiddleware
 
+from handlers.command_handlers import router as commands_router
+from keyboards.main_manu import set_default_main_menu, delete_commands
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +33,11 @@ async def main():
     bot = Bot(token=config.bot.token)
     dp = Dispatcher()
 
+    dp.startup.register(set_default_main_menu)
+    dp.shutdown.register(delete_commands)
+
     # Register routers
+    dp.include_router(commands_router)
 
     # Register middlewares
     dp.update.middleware(TranslatorMiddleware())
