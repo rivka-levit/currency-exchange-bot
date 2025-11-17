@@ -2,7 +2,7 @@ from aiogram import Bot, Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from keyboards.main_manu import set_personal_main_menu
+from interface.main_manu import set_personal_main_menu
 
 router = Router()
 

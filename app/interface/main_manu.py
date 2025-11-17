@@ -14,8 +14,8 @@ async def set_default_main_menu(bot: Bot) -> None:
     """Default menu to set on starting the bot."""
 
     menu_commands = [
-        BotCommand(command='start', description=LEXICON_EN['start']),
-        BotCommand(command='help', description=LEXICON_EN['help']),
+        BotCommand(command='start', description=LEXICON_EN['commands']['start']),
+        BotCommand(command='help', description=LEXICON_EN['commands']['help']),
     ]
 
     logger.info('Setting default main menu...')

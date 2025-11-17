@@ -10,7 +10,8 @@ from lexicon.lexicon_ru import LEXICON_RU
 from middlewares.i18n import TranslatorMiddleware
 
 from handlers.command_handlers import router as commands_router
-from keyboards.main_manu import set_default_main_menu, delete_commands
+from interface.main_manu import set_default_main_menu, delete_commands
+from interface.bot_description import set_bot_description
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +34,7 @@ async def main():
     bot = Bot(token=config.bot.token)
     dp = Dispatcher()
 
+    dp.startup.register(set_bot_description)
     dp.startup.register(set_default_main_menu)
     dp.shutdown.register(delete_commands)
 
@@ -44,7 +46,7 @@ async def main():
 
     dp.workflow_data['db'] = init_db()
 
-    await dp.start_polling(bot=bot, translations=translations)
+    await dp.start_polling(bot, translations=translations)
 
 
 if __name__ == '__main__':
