@@ -27,5 +27,5 @@ async def process_amount_sent(message: Message, db):
         pass
     else:
         await message.answer(
-            text=get_exchange_message(amount, result, user_id, db)
+            text=get_exchange_message(amount, result, source, target)
         )
