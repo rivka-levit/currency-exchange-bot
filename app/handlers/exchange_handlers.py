@@ -6,13 +6,14 @@ from aiogram import Router
 from aiogram.types import Message
 
 from exceptions import ConversionRequestError
+from filters import NumberInMessage
 from lexicon.exchange_message import get_exchange_message
 from services.converter import CurrencyConverter
 
 router = Router()
 
 
-@router.message(lambda x: x.text.isdigit())
+@router.message(NumberInMessage())
 async def process_amount_sent(message: Message, db):
     user_id = message.from_user.id
     converter = CurrencyConverter()
