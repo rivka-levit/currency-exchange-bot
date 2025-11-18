@@ -10,6 +10,8 @@ from lexicon.lexicon_ru import LEXICON_RU
 from middlewares.i18n import TranslatorMiddleware
 
 from handlers.command_handlers import router as commands_router
+from handlers.exchange_handlers import router as exchange_router
+
 from interface.main_manu import set_default_main_menu, delete_commands
 from interface.bot_description import set_bot_description
 
@@ -31,7 +33,7 @@ async def main():
         stream=config.log.stream,
     )
 
-    bot = Bot(token=config.bot.token)
+    bot = Bot(token=config.bot.token, default=config.bot.default)
     dp = Dispatcher()
 
     dp.startup.register(set_bot_description)
@@ -40,6 +42,7 @@ async def main():
 
     # Register routers
     dp.include_router(commands_router)
+    dp.include_router(exchange_router)
 
     # Register middlewares
     dp.update.middleware(TranslatorMiddleware())

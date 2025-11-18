@@ -4,7 +4,7 @@ Bot text translations in English
 
 LEXICON_EN = {
     'start_answer': 'Bot is up and ready. Enter your sum to convert.\n'
-                    'Default currencies set to USD -> ILS\n\n'
+                    'Default currencies set to USD > ILS\n\n'
                     '/set_currencies - to set other currencies\n'
                     '/help - to see all the options of the bot',
     'commands': {
