@@ -1,6 +1,6 @@
 from aiogram import Bot, Router
 from aiogram.filters import Command, CommandStart
-from aiogram.types import Message, ReplyKeyboardMarkup
+from aiogram.types import Message
 
 from interface.main_manu import set_personal_main_menu
 
@@ -21,6 +21,13 @@ async def handle_start_command(
 
     await set_personal_main_menu(bot=bot, i18n=i18n)
     await message.answer(text=i18n['start_answer'])
+
+
+@router.message(Command(commands=['help']))
+async def handle_help_command(message: Message, i18n) -> None:
+    """Handles help command."""
+
+    await message.answer(text=i18n['help_answer'])
 
 
 @router.message(Command(commands=['all_currencies']))
