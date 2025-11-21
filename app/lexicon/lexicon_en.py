@@ -4,6 +4,8 @@ Bot text translations in English
 
 LEXICON_EN = {
     '/all_currencies': '<b>All the currencies supported:</b>\n\n',
+    '/set_currencies': 'Set your pair of currencies.\n\nHere you can choose '
+                       'your source and/or target currency',
     'help_answer': 'Send your amount to convert and the bot will convert it '
                    'from one currency to another.\n\nDefault pair of '
                    'currencies had been set on start of the bot. '
