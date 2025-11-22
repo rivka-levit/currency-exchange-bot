@@ -9,11 +9,11 @@ def exchange_keyboard(source: str, target: str) -> InlineKeyboardMarkup:
     )
     source_btn = InlineKeyboardButton(
         text=source,
-        callback_data='choose_source_cur'
+        callback_data='source_choice'
     )
     target_btn = InlineKeyboardButton(
         text=target,
-        callback_data='choose_target_cur'
+        callback_data='target_choice'
     )
 
     builder = InlineKeyboardBuilder()
