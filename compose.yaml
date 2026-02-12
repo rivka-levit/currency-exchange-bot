@@ -8,4 +8,46 @@ services:
       - ./app:/app
     env_file:
       - .env
-    command: python3 main.py
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c 'python3 main.py'
+    networks:
+      - change_network
+
+  db:
+    image: postgres:18-alpine3.22
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+        compress: "true"
+    networks:
+      - change_network
+
+
+volumes:
+  dev-db-data:
+
+
+networks:
+  change_network:
+    name: change_network
