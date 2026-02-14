@@ -20,6 +20,15 @@ class TgBot:
 
 
 @dataclass
+class DatabaseConfig:
+    name: str
+    host: str
+    port: int
+    user: str
+    password: str
+
+
+@dataclass
 class LogSettings:
     level: str
     format: str
@@ -29,6 +38,7 @@ class LogSettings:
 @dataclass
 class Config:
     bot: TgBot
+    db: DatabaseConfig
     log: LogSettings
 
 
@@ -43,6 +53,13 @@ def load_config(path: str | None = None) -> Config:
         bot=TgBot(
             token=env.str("BOT_TOKEN"),
             default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+        ),
+        db=DatabaseConfig(
+            name=env.str('POSTGRES_DB'),
+            host=env.str('POSTGRES_HOST'),
+            port=env.int('POSTGRES_PORT'),
+            user=env.str('POSTGRES_USER'),
+            password=env.str('POSTGRES_PASSWORD'),
         ),
         log=LogSettings(
             level=env.str('LOG_LEVEL'),
