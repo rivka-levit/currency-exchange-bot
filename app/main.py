@@ -3,8 +3,11 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
+
 from config import Config, load_config
 from database import init_db
+from database.create_del_tables import create_tables
 from lexicon.lexicon_en import LEXICON_EN
 from lexicon.lexicon_ru import LEXICON_RU
 from middlewares.i18n import TranslatorMiddleware
@@ -25,6 +28,10 @@ translations = {
 }
 
 
+async def on_startup(engine: AsyncEngine):
+    await create_tables(engine)
+
+
 async def main():
     config: Config = load_config()
 
@@ -34,24 +41,34 @@ async def main():
         stream=config.log.stream,
     )
 
+    # Start database engine
+    db_url = (f'postgresql+asyncpg://{config.db.user}:{config.db.password}'
+              f'@{config.db.host}/{config.db.name}')
+    engine = create_async_engine(db_url, echo=True)
+
     bot = Bot(token=config.bot.token, default=config.bot.default)
     dp = Dispatcher()
 
+    dp.startup.register(on_startup)
     dp.startup.register(set_bot_description)
     dp.startup.register(set_default_main_menu)
     dp.shutdown.register(delete_commands)
+
+    # Register middlewares
+    dp.update.middleware(TranslatorMiddleware())
 
     # Register routers
     dp.include_router(commands_router)
     dp.include_router(exchange_router)
     dp.include_router(button_router)
 
-    # Register middlewares
-    dp.update.middleware(TranslatorMiddleware())
-
     dp.workflow_data['db'] = init_db()
 
-    await dp.start_polling(bot, translations=translations)
+    await dp.start_polling(
+        bot,
+        translations=translations,
+        engine=engine
+    )
 
 
 if __name__ == '__main__':
