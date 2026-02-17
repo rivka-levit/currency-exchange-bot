@@ -21,8 +21,8 @@ class Currency(Base):
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     is_available: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    source_users: Mapped[Set['User']] = relationship(back_populates='source')
-    target_users: Mapped[Set['User']] = relationship(back_populates='target')
+    # source_users: Mapped[Set['User']] = relationship('User', back_populates='source', foreign_keys='User.id')
+    # target_users: Mapped[Set['User']] = relationship('User', back_populates='target', foreign_keys='User.id')
 
 
 class User(Base):
@@ -37,8 +37,16 @@ class User(Base):
 
     source_id: Mapped[int] = mapped_column(ForeignKey('currency_table.id'), nullable=False)
     target_id: Mapped[int] = mapped_column(ForeignKey('currency_table.id'), nullable=False)
-    source: Mapped['Currency'] = relationship(back_populates='source_users')
-    target: Mapped['Currency'] = relationship(back_populates='target_users')
+    source: Mapped['Currency'] = relationship(
+        'Currency',
+        foreign_keys=[source_id],
+        backref='source_users'
+    )
+    target: Mapped['Currency'] = relationship(
+        'Currency',
+        foreign_keys=[target_id],
+        backref='target_users'
+    )
 
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)

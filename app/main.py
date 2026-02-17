@@ -3,13 +3,17 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
 from config import Config, load_config
+
 from database import init_db
 from database.create_del_tables import create_tables
+from database.currencies import orm_create_currencies
+
 from lexicon.lexicon_en import LEXICON_EN
 from lexicon.lexicon_ru import LEXICON_RU
+
 from middlewares.i18n import TranslatorMiddleware
 
 from handlers.button_handlers import router as button_router
@@ -28,10 +32,6 @@ translations = {
 }
 
 
-async def on_startup(engine: AsyncEngine):
-    await create_tables(engine)
-
-
 async def main():
     config: Config = load_config()
 
@@ -46,10 +46,24 @@ async def main():
               f'@{config.db.host}/{config.db.name}')
     engine = create_async_engine(db_url, echo=True)
 
+    # Create session pool
+    session_maker = async_sessionmaker(
+        bind=engine,
+        class_=AsyncSession,
+        expire_on_commit=False
+    )
+
+    # Create tables in database
+    await create_tables(engine)
+
+    # Fill currency table
+    async with session_maker() as session:
+        await orm_create_currencies(session)
+
+
     bot = Bot(token=config.bot.token, default=config.bot.default)
     dp = Dispatcher()
 
-    dp.startup.register(on_startup)
     dp.startup.register(set_bot_description)
     dp.startup.register(set_default_main_menu)
     dp.shutdown.register(delete_commands)
@@ -66,8 +80,7 @@ async def main():
 
     await dp.start_polling(
         bot,
-        translations=translations,
-        engine=engine
+        translations=translations
     )
 
 
