@@ -14,6 +14,7 @@ from database.currencies import orm_create_currencies
 from lexicon.lexicon_en import LEXICON_EN
 from lexicon.lexicon_ru import LEXICON_RU
 
+from middlewares.database import DbSessionMiddleware
 from middlewares.i18n import TranslatorMiddleware
 
 from handlers.button_handlers import router as button_router
@@ -70,6 +71,7 @@ async def main():
 
     # Register middlewares
     dp.update.middleware(TranslatorMiddleware())
+    dp.update.middleware(DbSessionMiddleware(session_pool=session_maker))
 
     # Register routers
     dp.include_router(commands_router)
