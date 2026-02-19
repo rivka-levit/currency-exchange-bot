@@ -16,6 +16,7 @@ from io import TextIOWrapper
 @dataclass
 class TgBot:
     token: str
+    admin_ids: set[int]
     default: DefaultBotProperties
 
 
@@ -52,6 +53,7 @@ def load_config(path: str | None = None) -> Config:
     return Config(
         bot=TgBot(
             token=env.str("BOT_TOKEN"),
+            admin_ids={int(i) for i in env.str('ADMIN_IDS').split(',')},
             default=DefaultBotProperties(parse_mode=ParseMode.HTML)
         ),
         db=DatabaseConfig(

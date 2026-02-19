@@ -9,7 +9,7 @@ from config import Config, load_config
 
 from database import init_db
 from database.create_del_tables import create_tables
-from database.currencies import orm_create_currencies
+from database.currencies_query import orm_create_currencies
 
 from lexicon.lexicon_en import LEXICON_EN
 from lexicon.lexicon_ru import LEXICON_RU
@@ -63,6 +63,8 @@ async def main():
 
 
     bot = Bot(token=config.bot.token, default=config.bot.default)
+    bot.admin_ids = config.bot.admin_ids
+
     dp = Dispatcher()
 
     dp.startup.register(set_bot_description)
