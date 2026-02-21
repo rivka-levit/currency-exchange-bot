@@ -1,10 +1,9 @@
-from typing import Set
-
 from sqlalchemy import Boolean, DateTime, ForeignKey, func, Integer, String
+from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
-class Base(DeclarativeBase):
+class Base(AsyncAttrs, DeclarativeBase):
     created: Mapped[DateTime] = mapped_column(DateTime, default=func.now())
     updated: Mapped[DateTime] = mapped_column(
         DateTime,

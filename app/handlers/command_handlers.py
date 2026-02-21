@@ -6,7 +6,7 @@ from aiogram.types import Message
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.currencies_query import orm_get_available_currencies
+from database.currencies_query import orm_get_available_currencies, orm_get_currency
 from database.users_query import orm_add_user, orm_get_user
 
 from keyboards.exchange_kb import exchange_keyboard
@@ -64,18 +64,23 @@ async def handle_all_currencies_command(
 
 
 @router.message(Command(commands=['set_currencies']))
-async def handle_set_currencies_command(message: Message, db, i18n) -> None:
+async def handle_set_currencies_command(
+        message: Message,
+        i18n: dict[str, Any],
+        session: AsyncSession
+) -> None:
     """Handles setting the currencies command."""
 
-    user_id = message.from_user.id
+    user = await orm_get_user(session, message.from_user.id)
 
-    if user_id not in db['users']:
-        db['users'][user_id] = {'source': 'USD', 'target': 'ILS'}
+    if not user:
+        await message.answer(text='User not found. Try restart the bot.')
+        return
 
-    source = db['users'][user_id]['source']
-    target = db['users'][user_id]['target']
+    source = await orm_get_currency(session, cur_id=user.source_id)
+    target = await orm_get_currency(session, cur_id=user.target_id)
 
     await message.answer(
         text=i18n['/set_currencies'],
-        reply_markup=exchange_keyboard(source=source, target=target)
+        reply_markup=exchange_keyboard(source=source.code, target=target.code)
     )

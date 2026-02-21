@@ -74,8 +74,17 @@ async def orm_create_currencies(session: AsyncSession):
     await session.commit()
 
 
-async def orm_get_currency(session: AsyncSession, code: str) -> Currency:
-    query = select(Currency).where(Currency.code == code)
+async def orm_get_currency(
+        session: AsyncSession,
+        code: str | None = None,
+        cur_id: int | None = None
+) -> Currency:
+    if code:
+        query = select(Currency).where(Currency.code == code)
+    elif cur_id:
+        query = select(Currency).where(Currency.id == cur_id)
+    else:
+        query = select(Currency).where(Currency.code == '111')
     result = await session.execute(query)
     return result.scalars().one_or_none()
 
