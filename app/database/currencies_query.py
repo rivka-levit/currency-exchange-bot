@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -76,3 +78,11 @@ async def orm_get_currency(session: AsyncSession, code: str) -> Currency:
     query = select(Currency).where(Currency.code == code)
     result = await session.execute(query)
     return result.scalars().one_or_none()
+
+
+async def orm_get_available_currencies(session: AsyncSession) -> Sequence[Currency]:
+    """Gets all available currencies from the database."""
+
+    query = select(Currency).where(Currency.is_available == True)
+    result = await session.execute(query)
+    return result.scalars().all()

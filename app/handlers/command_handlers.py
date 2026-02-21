@@ -1,9 +1,12 @@
+from typing import Any
+
 from aiogram import Bot, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from database.currencies_query import orm_get_available_currencies
 from database.users_query import orm_add_user, orm_get_user
 
 from keyboards.exchange_kb import exchange_keyboard
@@ -50,14 +53,16 @@ async def handle_help_command(message: Message, i18n) -> None:
 
 
 @router.message(Command(commands=['all_currencies']))
-async def handle_all_currencies_command(message: Message, db, i18n) -> None:
+async def handle_all_currencies_command(
+        message: Message,
+        i18n: dict[str, Any],
+        session: AsyncSession
+) -> None:
     """Handles retrieving all the currencies command."""
 
-    currencies = '\n'.join(
-        [f'{code} - {name}' for code, name in db['currencies'].items()]
-    )
-
-    await message.answer(text = i18n['/all_currencies'] + currencies)
+    currencies = await orm_get_available_currencies(session)
+    string_cur = '\n'.join([f'{cur.code} - {cur.name}' for cur in currencies])
+    await message.answer(text = i18n['/all_currencies'] + string_cur)
 
 
 @router.message(Command(commands=['set_currencies']))
