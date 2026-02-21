@@ -1,7 +1,14 @@
+from typing import Any
+
 from aiogram import F, Router
 from aiogram.types import CallbackQuery
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from callbacks import SourceCurrencyCallbackFactory, TargetCurrencyCallbackFactory
+
+from database.currencies_query import orm_create_currencies
+
 from keyboards.choice_kb import source_choice_keyboard, target_choice_keyboard
 from keyboards.exchange_kb import exchange_keyboard
 
@@ -9,18 +16,28 @@ router = Router()
 
 
 @router.callback_query(F.data=='source_choice')
-async def source_choice_btn_clicked(query: CallbackQuery, db, i18n):
+async def source_choice_btn_clicked(
+        query: CallbackQuery,
+        i18n: dict[str, Any],
+        session: AsyncSession
+):
+    currencies = await orm_create_currencies(session)
     await query.message.edit_text(
         text=i18n['source_choice_msg'],
-        reply_markup=source_choice_keyboard(db['currencies'])
+        reply_markup=source_choice_keyboard(currencies)
     )
 
 
 @router.callback_query(F.data=='target_choice')
-async def source_choice_btn_clicked(query: CallbackQuery, db, i18n):
+async def target_choice_btn_clicked(
+        query: CallbackQuery,
+        i18n: dict[str, Any],
+        session: AsyncSession
+):
+    currencies = await orm_create_currencies(session)
     await query.message.edit_text(
         text=i18n['target_choice_msg'],
-        reply_markup=target_choice_keyboard(db['currencies'])
+        reply_markup=target_choice_keyboard(currencies)
     )
 
 
