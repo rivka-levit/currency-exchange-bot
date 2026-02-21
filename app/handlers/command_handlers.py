@@ -39,9 +39,7 @@ async def handle_start_command(
 
         await orm_add_user(session, user_data)
 
-        # db['users'][user_id] = {'source': 'USD', 'target': 'ILS'}
-
-    await set_personal_main_menu(bot=bot, i18n=i18n)
+    await set_personal_main_menu(bot=bot, chat_id=message.chat.id, i18n=i18n)
     await message.answer(text=i18n['start_answer'])
 
 
