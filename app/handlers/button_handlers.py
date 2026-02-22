@@ -47,23 +47,17 @@ async def reverse_btn_clicked(
         query: CallbackQuery,
         session: AsyncSession
 ):
+    """Handles reverse button has been clicked."""
+
     user = await orm_get_user(session, query.from_user.id)
-
-    new_source_id = user.target_id
-    new_target_id = user.source_id
-
     await orm_update_user(
         session,
         user.tg_id,
-        {'source_id': new_source_id, 'target_id': new_target_id}
+        {'source_id': user.target_id, 'target_id': user.source_id}
     )
-
     await session.refresh(user)
-    source = await orm_get_currency(session, cur_id=new_source_id)
-    target = await orm_get_currency(session, cur_id=new_target_id)
-
     await query.message.edit_reply_markup(
-        reply_markup=exchange_keyboard(source=source, target=target)
+        reply_markup=exchange_keyboard(source=user.source, target=user.target)
     )
 
 
