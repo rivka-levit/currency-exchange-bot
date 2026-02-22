@@ -7,7 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from callbacks import SourceCurrencyCallbackFactory, TargetCurrencyCallbackFactory
 
-from database.currencies_query import orm_create_currencies
+from database.currencies_query import orm_create_currencies, orm_get_currency
+from database.users_query import orm_get_user, orm_update_user
 
 from keyboards.choice_kb import source_choice_keyboard, target_choice_keyboard
 from keyboards.exchange_kb import exchange_keyboard
@@ -42,19 +43,30 @@ async def target_choice_btn_clicked(
 
 
 @router.callback_query(F.data=='reverse')
-async def reverse_btn_clicked(query: CallbackQuery, db, i18n):
-    user_id = query.from_user.id
-    new_source = db['users'][user_id]['target']
-    new_target = db['users'][user_id]['source']
+async def reverse_btn_clicked(
+        query: CallbackQuery,
+        session: AsyncSession
+):
+    user = await orm_get_user(session, query.from_user.id)
 
-    db['users'][user_id]['source'] = new_source
-    db['users'][user_id]['target'] = new_target
+    new_source_id = user.target_id
+    new_target_id = user.source_id
 
-    await query.message.edit_reply_markup(
-        reply_markup=exchange_keyboard(source=new_source, target=new_target)
+    await orm_update_user(
+        session,
+        user.tg_id,
+        {'source_id': new_source_id, 'target_id': new_target_id}
     )
 
-    await query.answer(text=i18n['reverse_msg'], show_alert=True)
+    await session.refresh(user)
+    source = await orm_get_currency(session, cur_id=new_source_id)
+    target = await orm_get_currency(session, cur_id=new_target_id)
+
+    await query.message.edit_reply_markup(
+        reply_markup=exchange_keyboard(source=source, target=target)
+    )
+
+    # await query.answer(text=i18n['reverse_msg'], show_alert=True)
 
 
 @router.callback_query(SourceCurrencyCallbackFactory.filter())

@@ -82,5 +82,5 @@ async def handle_set_currencies_command(
 
     await message.answer(
         text=i18n['/set_currencies'],
-        reply_markup=exchange_keyboard(source=source.code, target=target.code)
+        reply_markup=exchange_keyboard(source=source, target=target)
     )

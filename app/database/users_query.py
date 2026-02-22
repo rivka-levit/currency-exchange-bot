@@ -1,6 +1,6 @@
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.currencies_query import orm_get_currency
@@ -27,4 +27,16 @@ async def orm_add_user(session: AsyncSession, data: dict[str, Any]) -> None:
         target_id=eur.id
     )
     session.add(new_user)
+    await session.commit()
+
+
+async def orm_update_user(
+        session: AsyncSession,
+        user_id: int,
+        data: dict[str, Any]
+) -> None:
+    """Update user data in database."""
+
+    query = update(User).where(User.tg_id == user_id).values(**data)
+    await session.execute(query)
     await session.commit()

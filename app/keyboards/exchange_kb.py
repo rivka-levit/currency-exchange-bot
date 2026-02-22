@@ -1,18 +1,20 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from database.models import Currency
 
-def exchange_keyboard(source: str, target: str) -> InlineKeyboardMarkup:
+
+def exchange_keyboard(source: Currency, target: Currency) -> InlineKeyboardMarkup:
     change_btn = InlineKeyboardButton(
         text='🔄',
         callback_data='reverse'
     )
     source_btn = InlineKeyboardButton(
-        text=source,
+        text=source.code,
         callback_data='source_choice'
     )
     target_btn = InlineKeyboardButton(
-        text=target,
+        text=target.code,
         callback_data='target_choice'
     )
 
