@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from callbacks import SourceCurrencyCallbackFactory, TargetCurrencyCallbackFactory
 
-from database.currencies_query import orm_create_currencies, orm_get_currency
+from database.currencies_query import orm_get_available_currencies, orm_get_currency
 from database.users_query import orm_get_user, orm_update_user
 
 from keyboards.choice_kb import source_choice_keyboard, target_choice_keyboard
@@ -22,7 +22,7 @@ async def source_choice_btn_clicked(
         i18n: dict[str, Any],
         session: AsyncSession
 ):
-    currencies = await orm_create_currencies(session)
+    currencies = await orm_get_available_currencies(session)
     await query.message.edit_text(
         text=i18n['source_choice_msg'],
         reply_markup=source_choice_keyboard(currencies)
@@ -35,7 +35,7 @@ async def target_choice_btn_clicked(
         i18n: dict[str, Any],
         session: AsyncSession
 ):
-    currencies = await orm_create_currencies(session)
+    currencies = await orm_get_available_currencies(session)
     await query.message.edit_text(
         text=i18n['target_choice_msg'],
         reply_markup=target_choice_keyboard(currencies)
@@ -66,50 +66,42 @@ async def reverse_btn_clicked(
         reply_markup=exchange_keyboard(source=source, target=target)
     )
 
-    # await query.answer(text=i18n['reverse_msg'], show_alert=True)
-
 
 @router.callback_query(SourceCurrencyCallbackFactory.filter())
 async def source_currency_btn_chosen(
         query: CallbackQuery,
         callback_data: SourceCurrencyCallbackFactory,
-        db,
-        i18n
+        i18n: dict[str, Any],
+        session: AsyncSession
 ):
     """Handles one of source currency buttons has been chosen."""
 
-    user_id = query.from_user.id
-    new_source = callback_data.code
-    db['users'][user_id]['source'] = new_source
+    user = await orm_get_user(session, query.from_user.id)
+    new_source = await orm_get_currency(session, code=callback_data.code)
+
+    await orm_update_user(session, user.tg_id, {'source_id': new_source.id})
 
     await query.message.edit_text(
         text=i18n['/set_currencies'],
-        reply_markup=exchange_keyboard(
-            source=new_source,
-            target=db['users'][user_id]['target']
-        )
+        reply_markup=exchange_keyboard(source=new_source, target=user.target)
     )
-    await query.answer(text=i18n['source_set_msg'], show_alert=True)
 
 
 @router.callback_query(TargetCurrencyCallbackFactory.filter())
 async def target_currency_btn_chosen(
         query: CallbackQuery,
         callback_data: TargetCurrencyCallbackFactory,
-        db,
-        i18n
+        i18n: dict[str, Any],
+        session: AsyncSession
 ):
     """Handles one of target currency buttons has been chosen."""
 
-    user_id = query.from_user.id
-    new_target = callback_data.code
-    db['users'][user_id]['target'] = new_target
+    user = await orm_get_user(session, query.from_user.id)
+    new_target = await orm_get_currency(session, code=callback_data.code)
+
+    await orm_update_user(session, user.tg_id, {'target_id': new_target.id})
 
     await query.message.edit_text(
         text=i18n['/set_currencies'],
-        reply_markup=exchange_keyboard(
-            source=db['users'][user_id]['source'],
-            target=new_target
-        )
+        reply_markup=exchange_keyboard(source=user.source, target=new_target)
     )
-    await query.answer(text=i18n['taget_set_msg'], show_alert=True)

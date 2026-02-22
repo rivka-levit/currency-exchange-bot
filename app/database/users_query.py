@@ -2,6 +2,7 @@ from typing import Any
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from database.currencies_query import orm_get_currency
 from database.models import User
@@ -10,7 +11,10 @@ from database.models import User
 async def orm_get_user(session: AsyncSession, user_id: int) -> User:
     """Get one user from database."""
 
-    query = select(User).where(User.tg_id == user_id)
+    query = select(User).where(User.tg_id == user_id).options(
+        joinedload(User.source),
+        joinedload(User.target)
+    )
     result = await session.execute(query)
     return result.scalars().one_or_none()
 
