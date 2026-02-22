@@ -6,7 +6,7 @@ from aiogram.types import Message
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.currencies_query import orm_get_available_currencies, orm_get_currency
+from database.currencies_query import orm_get_available_currencies
 from database.users_query import orm_add_user, orm_get_user
 
 from keyboards.exchange_kb import exchange_keyboard
@@ -77,10 +77,7 @@ async def handle_set_currencies_command(
         await message.answer(text='User not found. Try restart the bot.')
         return
 
-    source = await orm_get_currency(session, cur_id=user.source_id)
-    target = await orm_get_currency(session, cur_id=user.target_id)
-
     await message.answer(
         text=i18n['/set_currencies'],
-        reply_markup=exchange_keyboard(source=source, target=target)
+        reply_markup=exchange_keyboard(source=user.source, target=user.target)
     )
