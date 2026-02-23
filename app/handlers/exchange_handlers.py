@@ -5,6 +5,10 @@ Handlers to process the amount sent to convert.
 from aiogram import Router
 from aiogram.types import Message
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.users_query import orm_get_user
+
 from exceptions import ConversionRequestError
 from filters import NumberInMessage
 from lexicon.exchange_message import get_exchange_message
@@ -14,12 +18,15 @@ router = Router()
 
 
 @router.message(NumberInMessage())
-async def process_amount_sent(message: Message, db):
-    user_id = message.from_user.id
+async def process_amount_sent(message: Message, session: AsyncSession):
+    """Handles amount sent to convert."""
+
+    user = await orm_get_user(session, message.from_user.id)
     converter = CurrencyConverter()
-    source = db['users'][user_id]['source']
-    target = db['users'][user_id]['target']
-    amount = float(message.text)
+
+    source = user.source.code
+    target = user.target.code
+    amount = float(message.text.strip())
 
     try:
         result = converter.convert(source, target, amount)
