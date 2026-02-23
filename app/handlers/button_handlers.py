@@ -99,3 +99,19 @@ async def target_currency_btn_chosen(
         text=i18n['/set_currencies'],
         reply_markup=exchange_keyboard(source=user.source, target=new_target)
     )
+
+
+@router.callback_query(F.data=='back_exchange_kb')
+async def back_to_exchange_keyboard_btn(
+        query: CallbackQuery,
+        i18n: dict[str, Any],
+        session: AsyncSession
+):
+    """Handles back button to return to set currency screen."""
+
+    user = await orm_get_user(session, query.from_user.id)
+
+    await query.message.edit_text(
+        text=i18n['/set_currencies'],
+        reply_markup=exchange_keyboard(source=user.source, target=user.target)
+    )

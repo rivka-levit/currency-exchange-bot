@@ -29,7 +29,7 @@ def source_choice_keyboard(
 
     back_btn = InlineKeyboardButton(
         text=i18n['back_btn'],
-        callback_data='back_btn'
+        callback_data='back_exchange_kb'
     )
 
     builder = InlineKeyboardBuilder()
@@ -59,7 +59,7 @@ def target_choice_keyboard(
 
     back_btn = InlineKeyboardButton(
         text=i18n['back_btn'],
-        callback_data='back_btn'
+        callback_data='back_exchange_kb'
     )
 
     builder = InlineKeyboardBuilder()
