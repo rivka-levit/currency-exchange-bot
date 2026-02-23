@@ -26,5 +26,6 @@ LEXICON_EN = {
         'help': 'Information about the bot',
         'set_currencies': 'Set the pair of currencies',
         'all_currencies': 'All currencies supported',
-    }
+    },
+    'back_btn': '<<  Back',
 }

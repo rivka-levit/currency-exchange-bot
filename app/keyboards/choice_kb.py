@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from typing import Any
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -8,7 +9,10 @@ from callbacks import SourceCurrencyCallbackFactory, TargetCurrencyCallbackFacto
 from database.models import Currency
 
 
-def source_choice_keyboard(currencies: Sequence[Currency]) -> InlineKeyboardMarkup:
+def source_choice_keyboard(
+        currencies: Sequence[Currency],
+        i18n: dict[str, Any]
+) -> InlineKeyboardMarkup:
     """Keyboard to choose a source currency."""
 
     code_buttons = list()
@@ -23,13 +27,22 @@ def source_choice_keyboard(currencies: Sequence[Currency]) -> InlineKeyboardMark
         )
         code_buttons.append(currency_btn)
 
+    back_btn = InlineKeyboardButton(
+        text=i18n['back_btn'],
+        callback_data='back_btn'
+    )
+
     builder = InlineKeyboardBuilder()
     builder.row(*code_buttons, width=5)
+    builder.row(back_btn, width=1)
 
     return builder.as_markup()
 
 
-def target_choice_keyboard(currencies: Sequence[Currency]) -> InlineKeyboardMarkup:
+def target_choice_keyboard(
+        currencies: Sequence[Currency],
+        i18n: dict[str, Any]
+) -> InlineKeyboardMarkup:
     """Keyboard to choose a target currency."""
 
     code_buttons = list()
@@ -44,7 +57,13 @@ def target_choice_keyboard(currencies: Sequence[Currency]) -> InlineKeyboardMark
         )
         code_buttons.append(currency_btn)
 
+    back_btn = InlineKeyboardButton(
+        text=i18n['back_btn'],
+        callback_data='back_btn'
+    )
+
     builder = InlineKeyboardBuilder()
     builder.row(*code_buttons, width=5)
+    builder.row(back_btn, width=1)
 
     return builder.as_markup()

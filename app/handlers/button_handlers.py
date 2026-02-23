@@ -25,7 +25,7 @@ async def source_choice_btn_clicked(
     currencies = await orm_get_available_currencies(session)
     await query.message.edit_text(
         text=i18n['source_choice_msg'],
-        reply_markup=source_choice_keyboard(currencies)
+        reply_markup=source_choice_keyboard(currencies, i18n)
     )
 
 
@@ -38,7 +38,7 @@ async def target_choice_btn_clicked(
     currencies = await orm_get_available_currencies(session)
     await query.message.edit_text(
         text=i18n['target_choice_msg'],
-        reply_markup=target_choice_keyboard(currencies)
+        reply_markup=target_choice_keyboard(currencies, i18n)
     )
 
 
