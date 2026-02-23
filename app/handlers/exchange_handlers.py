@@ -2,6 +2,8 @@
 Handlers to process the amount sent to convert.
 """
 
+from typing import Any
+
 from aiogram import Router
 from aiogram.types import Message
 
@@ -36,3 +38,10 @@ async def process_amount_sent(message: Message, session: AsyncSession):
         await message.answer(
             text=get_exchange_message(amount, result, source, target)
         )
+
+
+@router.message()
+async def process_other_messages(message: Message, i18n: dict[str, Any]):
+    """Handles other messages sent to bot."""
+
+    await message.answer(text=i18n['wrong_msg'])

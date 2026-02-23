@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class NumberInMessage(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        pattern = r'^-?\d+\.\d+$'
+        pattern = r'^\d+\.\d+$'
         text = message.text.strip()
 
         return text.isdigit() or re.match(pattern, text)

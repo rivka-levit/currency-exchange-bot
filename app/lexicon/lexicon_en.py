@@ -28,4 +28,6 @@ LEXICON_EN = {
         'all_currencies': 'All currencies supported',
     },
     'back_btn': '<<  Back',
+    'wrong_msg': 'Amount to convert must be a positive integer or float '
+                 'number with dot divider.\nFor example: `125` or `35.8`',
 }

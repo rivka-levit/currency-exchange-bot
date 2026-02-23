@@ -82,8 +82,8 @@ async def main():
 
     # Register routers
     dp.include_router(commands_router)
-    dp.include_router(exchange_router)
     dp.include_router(button_router)
+    dp.include_router(exchange_router)
 
     dp.workflow_data['db'] = init_db()
 
