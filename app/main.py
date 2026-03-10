@@ -13,9 +13,10 @@ from database.currencies_query import orm_create_currencies
 
 from lexicon.lexicon_en import LEXICON_EN
 from lexicon.lexicon_ru import LEXICON_RU
+from lexicon.translator import Translator
 
 from middlewares.database import DbSessionMiddleware
-from middlewares.i18n import TranslatorMiddleware
+from middlewares.i18n import FluentTranslatorMiddleware, TranslatorMiddleware
 
 from handlers.button_handlers import router as button_router
 from handlers.command_handlers import router as commands_router
@@ -77,8 +78,9 @@ async def main():
     dp.shutdown.register(on_shutdown)
 
     # Register middlewares
-    dp.update.middleware(TranslatorMiddleware())
+    # dp.update.middleware(TranslatorMiddleware())
     dp.update.middleware(DbSessionMiddleware(session_pool=session_maker))
+    dp.update.middleware(FluentTranslatorMiddleware())
 
     # Register routers
     dp.include_router(commands_router)
@@ -90,7 +92,8 @@ async def main():
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(
         bot,
-        translations=translations
+        translations=translations,
+        translator=Translator()
     )
 
 
