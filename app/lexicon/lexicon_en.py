@@ -19,7 +19,7 @@ LEXICON_EN = {
     'source_choice_msg': 'Choose your source currency',
     'source_set_msg': 'Source currency has been set',
     'target_choice_msg': 'Choose your target currency',
-    'taget_set_msg': 'Source currency has been set',
+    'taget_set_msg': 'Target currency has been set',
     'reverse_msg': 'Currencies reversed',
     'commands': {
         'start': 'Start the bot',
