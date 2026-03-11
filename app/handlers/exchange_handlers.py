@@ -2,8 +2,6 @@
 Handlers to process the amount sent to convert.
 """
 
-from typing import Any
-
 from aiogram import Router
 from aiogram.types import Message
 
@@ -13,6 +11,7 @@ from database.users_query import orm_get_user
 
 from exceptions import ConversionRequestError
 from filters import NumberInMessage
+from lexicon.translator import LocalizedTranslator
 from lexicon.exchange_message import get_exchange_message
 from services.converter import CurrencyConverter
 
@@ -41,7 +40,7 @@ async def process_amount_sent(message: Message, session: AsyncSession):
 
 
 @router.message()
-async def process_other_messages(message: Message, i18n: dict[str, Any]):
+async def process_other_messages(message: Message, i18n: LocalizedTranslator):
     """Handles other messages sent to bot."""
 
-    await message.answer(text=i18n['wrong_msg'])
+    await message.answer(text=i18n.get('wrong_msg'))

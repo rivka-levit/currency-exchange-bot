@@ -1,5 +1,4 @@
 from collections.abc import Sequence
-from typing import Any
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -7,11 +6,12 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from callbacks import SourceCurrencyCallbackFactory, TargetCurrencyCallbackFactory
 
 from database.models import Currency
+from lexicon.translator import LocalizedTranslator
 
 
 def source_choice_keyboard(
         currencies: Sequence[Currency],
-        i18n: dict[str, Any]
+        i18n: LocalizedTranslator
 ) -> InlineKeyboardMarkup:
     """Keyboard to choose a source currency."""
 
@@ -28,7 +28,7 @@ def source_choice_keyboard(
         code_buttons.append(currency_btn)
 
     back_btn = InlineKeyboardButton(
-        text=i18n['back_btn'],
+        text=i18n.get('back_btn'),
         callback_data='back_exchange_kb'
     )
 
@@ -41,7 +41,7 @@ def source_choice_keyboard(
 
 def target_choice_keyboard(
         currencies: Sequence[Currency],
-        i18n: dict[str, Any]
+        i18n: LocalizedTranslator
 ) -> InlineKeyboardMarkup:
     """Keyboard to choose a target currency."""
 
@@ -58,7 +58,7 @@ def target_choice_keyboard(
         code_buttons.append(currency_btn)
 
     back_btn = InlineKeyboardButton(
-        text=i18n['back_btn'],
+        text=i18n.get('back_btn'),
         callback_data='back_exchange_kb'
     )
 
