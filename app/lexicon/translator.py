@@ -1,4 +1,3 @@
-
 from fluentogram import FluentTranslator, TranslatorHub, TranslatorRunner
 from fluent_compiler.bundle import FluentBundle  # noqa
 

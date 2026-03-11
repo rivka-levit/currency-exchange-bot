@@ -3,32 +3,28 @@ import logging
 from aiogram import Bot
 from aiogram.types import BotCommand, BotCommandScopeChat
 
+from lexicon.translator import LocalizedTranslator
+
 logger = logging.getLogger(__name__)
 
-
-# async def set_default_main_menu(bot: Bot) -> None:
-#     """Default menu to set on starting the bot."""
-#
-#     menu_commands = [
-#         BotCommand(command='start', description=LEXICON_EN['commands']['start']),
-#         BotCommand(command='help', description=LEXICON_EN['commands']['help']),
-#     ]
-#
-#     logger.info('Setting default main menu...')
-#
-#     await bot.set_my_commands(
-#         commands=menu_commands,
-#         scope=BotCommandScopeDefault()
-#     )
+COMMAND_NAMES = [
+    'start',
+    'help',
+    'set_currencies',
+    'all_currencies'
+]
 
 
-async def set_personal_main_menu(bot: Bot, chat_id: int, i18n: dict[str, str | dict]) -> None:
+async def set_personal_main_menu(bot: Bot, chat_id: int, i18n: LocalizedTranslator) -> None:
     """Personal menu to set on /start command."""
 
     menu_commands = list()
 
-    for command, descr in i18n['commands'].items():
-        menu_commands.append(BotCommand(command=command, description=descr))
+    for command in COMMAND_NAMES:
+        menu_commands.append(BotCommand(
+            command=command,
+            description=i18n.get(f'{command}_descr')
+        ))
 
     logger.info('Setting personal main menu commands...')
 

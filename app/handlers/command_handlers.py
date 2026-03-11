@@ -1,5 +1,3 @@
-from typing import Any
-
 from aiogram import Bot, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
@@ -10,6 +8,7 @@ from database.currencies_query import orm_get_available_currencies
 from database.users_query import orm_add_user, orm_get_user
 
 from keyboards.exchange_kb import exchange_keyboard
+from lexicon.translator import LocalizedTranslator
 from interface.main_manu import set_personal_main_menu
 
 router = Router()
@@ -19,7 +18,7 @@ router = Router()
 async def handle_start_command(
         message: Message,
         bot: Bot,
-        i18n,
+        i18n: LocalizedTranslator,
         session: AsyncSession
 ):
     """Handles starting the bot."""
@@ -40,33 +39,33 @@ async def handle_start_command(
         await orm_add_user(session, user_data)
 
     await set_personal_main_menu(bot=bot, chat_id=message.chat.id, i18n=i18n)
-    await message.answer(text=i18n['start_answer'])
+    await message.answer(text=i18n.get('start_answer'))
 
 
 @router.message(Command(commands=['help']))
-async def handle_help_command(message: Message, i18n) -> None:
+async def handle_help_command(message: Message, i18n: LocalizedTranslator) -> None:
     """Handles help command."""
 
-    await message.answer(text=i18n['help_answer'])
+    await message.answer(text=i18n.get('help_answer'))
 
 
 @router.message(Command(commands=['all_currencies']))
 async def handle_all_currencies_command(
         message: Message,
-        i18n: dict[str, Any],
+        i18n: LocalizedTranslator,
         session: AsyncSession
 ) -> None:
     """Handles retrieving all the currencies command."""
 
     currencies = await orm_get_available_currencies(session)
     string_cur = '\n'.join([f'{cur.code} - {cur.name}' for cur in currencies])
-    await message.answer(text = i18n['/all_currencies'] + string_cur)
+    await message.answer(text = i18n.get('all_currencies') + '\n' + string_cur)
 
 
 @router.message(Command(commands=['set_currencies']))
 async def handle_set_currencies_command(
         message: Message,
-        i18n: dict[str, Any],
+        i18n: LocalizedTranslator,
         session: AsyncSession
 ) -> None:
     """Handles setting the currencies command."""
@@ -78,6 +77,6 @@ async def handle_set_currencies_command(
         return
 
     await message.answer(
-        text=i18n['/set_currencies'],
+        text=i18n.get('set_currencies'),
         reply_markup=exchange_keyboard(source=user.source, target=user.target)
     )
