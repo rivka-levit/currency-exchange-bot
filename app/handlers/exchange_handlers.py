@@ -12,8 +12,8 @@ from database.users_query import orm_get_user
 from exceptions import ConversionRequestError
 from filters import NumberInMessage
 from lexicon.translator import LocalizedTranslator
-from lexicon.exchange_message import get_exchange_message
 from services.converter import CurrencyConverter
+from utils.exchange_message import get_exchange_message
 
 router = Router()
 

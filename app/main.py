@@ -7,16 +7,13 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 
 from config import Config, load_config
 
-from database import init_db
 from database.create_del_tables import create_tables
 from database.currencies_query import orm_create_currencies
 
-from lexicon.lexicon_en import LEXICON_EN
-from lexicon.lexicon_ru import LEXICON_RU
 from lexicon.translator import Translator
 
 from middlewares.database import DbSessionMiddleware
-from middlewares.i18n import FluentTranslatorMiddleware, TranslatorMiddleware
+from middlewares.i18n import FluentTranslatorMiddleware
 
 from handlers.button_handlers import router as button_router
 from handlers.command_handlers import router as commands_router
@@ -25,12 +22,6 @@ from handlers.exchange_handlers import router as exchange_router
 from interface.bot_description import set_bot_description
 
 logger = logging.getLogger(__name__)
-
-translations = {
-    'default': 'en',
-    'en': LEXICON_EN,
-    'ru': LEXICON_RU,
-}
 
 
 async def on_startup(bot: Bot):
@@ -78,7 +69,6 @@ async def main():
     dp.shutdown.register(on_shutdown)
 
     # Register middlewares
-    # dp.update.middleware(TranslatorMiddleware())
     dp.update.middleware(DbSessionMiddleware(session_pool=session_maker))
     dp.update.middleware(FluentTranslatorMiddleware())
 
@@ -87,14 +77,8 @@ async def main():
     dp.include_router(button_router)
     dp.include_router(exchange_router)
 
-    dp.workflow_data['db'] = init_db()
-
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(
-        bot,
-        translations=translations,
-        translator=Translator()
-    )
+    await dp.start_polling(bot, translator=Translator())
 
 
 if __name__ == '__main__':

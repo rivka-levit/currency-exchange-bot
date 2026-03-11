@@ -9,7 +9,7 @@ from database.users_query import orm_add_user, orm_get_user
 
 from keyboards.exchange_kb import exchange_keyboard
 from lexicon.translator import LocalizedTranslator
-from interface.main_manu import set_personal_main_menu
+from interface.main_menu import set_personal_main_menu
 
 router = Router()
 
