@@ -5,7 +5,7 @@ from aiogram.types import TelegramObject, User
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.users_query import orm_get_user
+from database.query_users import orm_get_user
 from lexicon.translator import Translator
 
 

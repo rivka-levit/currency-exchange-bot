@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 from config import Config, load_config
 
 from database.create_del_tables import create_tables
-from database.currencies_query import orm_create_currencies
+from database.query_currencies import orm_create_currencies
 
 from lexicon.translator import Translator
 

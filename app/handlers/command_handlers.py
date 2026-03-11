@@ -4,8 +4,8 @@ from aiogram.types import Message
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.currencies_query import orm_get_available_currencies
-from database.users_query import orm_add_user, orm_get_user
+from database.query_currencies import orm_get_available_currencies
+from database.query_users import orm_add_user, orm_get_user
 
 from keyboards.exchange_kb import exchange_keyboard
 from lexicon.translator import LocalizedTranslator

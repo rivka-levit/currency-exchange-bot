@@ -4,7 +4,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from database.currencies_query import orm_get_currency
+from database.query_currencies import orm_get_currency
 from database.models import User
 
 

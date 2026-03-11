@@ -7,7 +7,7 @@ from aiogram.types import Message
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.users_query import orm_get_user
+from database.query_users import orm_get_user
 
 from exceptions import ConversionRequestError
 from filters import NumberInMessage

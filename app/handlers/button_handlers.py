@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from callbacks import SourceCurrencyCallbackFactory, TargetCurrencyCallbackFactory
 
-from database.currencies_query import orm_get_available_currencies, orm_get_currency
-from database.users_query import orm_get_user, orm_update_user
+from database.query_currencies import orm_get_available_currencies, orm_get_currency
+from database.query_users import orm_get_user, orm_update_user
 
 from keyboards.choice_kb import source_choice_keyboard, target_choice_keyboard
 from keyboards.exchange_kb import exchange_keyboard
