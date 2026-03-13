@@ -16,7 +16,7 @@ class FluentTranslatorMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: dict[str, Any]
     ) -> Any:
-        translator = Translator()
+        translator: Translator = data['translator']
         tg_user: User = data.get('event_from_user')
 
         if tg_user:

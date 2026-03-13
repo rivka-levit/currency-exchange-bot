@@ -12,6 +12,7 @@ TEST_TG_USER = User(
 TEST_CHAT = Chat(
     id=12,
     type='private',
+    title='TestTitle',
     first_name=TEST_TG_USER.first_name,
     last_name=TEST_TG_USER.last_name,
     username=TEST_TG_USER.username,
