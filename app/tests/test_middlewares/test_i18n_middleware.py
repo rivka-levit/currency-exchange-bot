@@ -85,3 +85,27 @@ async def test_i18n_middleware_no_db_user(custom_user, chat):
         expected_i18n = translator(lang=language)
         assert isinstance(i18n, LocalizedTranslator)
         assert i18n.get('help_answer') == expected_i18n.get('help_answer')
+
+
+async def test_i18n_middleware_no_tg_user(custom_user, chat):
+    """Test i18n middleware with no telegram user."""
+
+    middleware = FluentTranslatorMiddleware()
+    translator = Translator()
+    message = Message(
+        message_id=153,
+        date=datetime.now(),
+        chat=chat,
+    )
+    data = {
+        'session': AsyncMock(),
+        'translator': translator
+    }
+
+    await middleware(next_handler, message, data)
+
+    assert 'i18n' in data
+    i18n = data['i18n']
+    expected_i18n = translator(lang='en')
+    assert isinstance(i18n, LocalizedTranslator)
+    assert i18n.get('start_answer') == expected_i18n.get('start_answer')
